@@ -1,0 +1,20 @@
+<!doctype html><title>Orbit Uploader: authorization</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:16px/1.5 system-ui,sans-serif;max-width:640px;margin:48px auto;padding:0 16px;color:#1b1b22}code,textarea{font:14px ui-monospace,monospace}textarea{width:100%;height:96px;padding:8px}button{font:inherit;padding:8px 16px;margin-top:8px;cursor:pointer}.m{color:#666;font-size:14px}</style>
+<h1>Orbit Uploader</h1>
+<div id="ok" hidden>
+<p>Authorization received. Copy this code and paste it into the Orbit window, then you can close this page.</p>
+<textarea id="code" readonly></textarea><br><button id="copy">Copy code</button>
+<p class="m">The code works only together with the private key stored on the owner's computer. Do not post it publicly anyway.</p>
+</div>
+<div id="bad" hidden><p id="msg">No authorization code in the address.</p></div>
+<script>
+const q = new URLSearchParams(location.search), code = q.get("code");
+if (code) {
+  document.getElementById("code").value = code + "|" + (q.get("state") || "");
+  document.getElementById("ok").hidden = false;
+  document.getElementById("copy").onclick = () => { navigator.clipboard.writeText(document.getElementById("code").value); document.getElementById("copy").textContent = "Copied"; };
+  history.replaceState(null, "", location.pathname);
+} else {
+  document.getElementById("msg").textContent = q.get("error_description") || q.get("error") || "No authorization code in the address.";
+  document.getElementById("bad").hidden = false;
+}
+</script>
